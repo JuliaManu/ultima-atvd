@@ -3,29 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redes Sociais - Mundo</title>
+    <title>Comparação de Uso de Celulares</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
 </head>
 <body>
     <header>
-        <h1>Relatório das redes sociais</h1>
+        <h1>Comparação de Uso de Celulares</h1>
         <nav>
-            <a href="index.html">Mundo</a>
-            <a href="minha-escola.html">Col.Claudio Morelli</a>
+            <ul>
+                <li><a href="minha-escola.html">Minha Escola</a></li>
+                <li><a href="#" id="compararBtn">Comparar Uso de Celulares</a></li>
+            </ul>
         </nav>
     </header>
-    <main class="graficos-section">
-        <section id="graficos-container" class="graficos-container">
-            <!-- crie os gráficos/texto aqui -->
-        </section>
-    </main>
-    <footer>
-        <p>Por julia</p>
-    </footer>
-    <script type="module" src="graficos/common.js"></script>
-    <script type="module" src="graficos/informacoesGlobais.js"></script>
-    <script type="module" src="graficos/quantidadeUsuarios.js"></script>
-    <script type="module" src="graficos/redesFavoritasMundo.js"></script>
+
+    <section id="comparacao">
+        <h2>Comparação de Uso de Celulares</h2>
+        <div id="resultados"></div>
+    </section>
+
+    <script src="common.js"></script>
+    <script>
+        // Evento para quando clicar no botão de comparação
+        document.getElementById('compararBtn').addEventListener('click', function () {
+            fetchComparacao();
+        });
+
+        function fetchComparacao() {
+            fetch('http://localhost:3000/api/comparacao')
+                .then(response => response.json())
+                .then(data => {
+                    let resultados = `
+                        <p><strong>Usuários no Mundo:</strong> ${data.usuariosMundo} bilhões</p>
+                        <p><strong>Usuários na Escola:</strong> ${data.usuariosColegio} estudantes</p>
+                        <p><strong>Percentual de Uso no Mundo:</strong> ${data.percentualMundo}%</p>
+                        <p><strong>Percentual de Uso na Escola:</strong> ${data.percentualColegio}%</p>
+                        <p><strong>Dispositivos Usados no Mundo:</strong> ${data.dispositivosMundo.join(', ')}</p>
+                        <p><strong>Dispositivos Usados na Escola:</strong> ${data.dispositivosColegio.join(', ')}</p>
+                    `;
+                    document.getElementById('resultados').innerHTML = resultados;
+                })
+                .catch(error => console.error('Erro ao carregar os dados da comparação:', error));
+        }
+    </script>
 </body>
 </html>
