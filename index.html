@@ -1,56 +1,88 @@
-<script>
-    // Adiciona um evento de clique para buscar os dados da comparação
-    document.getElementById('compararBtn').addEventListener('click', function () {
-        fetchComparacao();
-    });
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparação de Uso de Celulares</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Incluindo o Chart.js -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Comparação de Uso de Celulares</h1>
+        <nav>
+            <ul>
+                <li><a href="minha-escola.html">Minha Escola</a></li>
+                <li><a href="#" id="compararBtn">Comparar Uso de Celulares</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    // Função para buscar os dados da API
-    function fetchComparacao() {
-        fetch('https://seu-usuario.github.io/seu-repositorio/api/comparacao')
-            .then(response => response.json())
-            .then(data => {
-                // Exibir os dados no div #resultados
-                let resultados = `
-                    <p><strong>Usuários no Mundo:</strong> ${data.usuariosMundo} bilhões</p>
-                    <p><strong>Usuários na Escola:</strong> ${data.usuariosColegio} estudantes</p>
-                    <p><strong>Percentual de Uso no Mundo:</strong> ${data.percentualMundo}%</p>
-                    <p><strong>Percentual de Uso na Escola:</strong> ${data.percentualColegio}%</p>
-                    <p><strong>Dispositivos Usados no Mundo:</strong> ${data.dispositivosMundo.join(', ')}</p>
-                    <p><strong>Dispositivos Usados na Escola:</strong> ${data.dispositivosColegio.join(', ')}</p>
-                `;
-                document.getElementById('resultados').innerHTML = resultados;
+    <section id="comparacao">
+        <h2>Comparação de Uso de Celulares</h2>
+        <div id="resultados"></div>
+        <canvas id="graficoComparacao" width="400" height="400"></canvas> <!-- Canvas do gráfico -->
+    </section>
 
-                // Criar o gráfico
-                criarGrafico(data);
-            })
-            .catch(error => console.error('Erro ao carregar os dados da comparação:', error));
-    }
+    <script>
+        // Ao clicar no botão "Comparar", buscamos os dados da API
+        document.getElementById('compararBtn').addEventListener('click', function () {
+            fetchComparacao();
+        });
 
-    // Função para criar o gráfico
-    function criarGrafico(data) {
-        const ctx = document.getElementById('graficoComparacao').getContext('2d');
-        
-        // Criar o gráfico de barras com Chart.js
-        new Chart(ctx, {
-            type: 'bar', // Tipo do gráfico (pode ser 'bar', 'line', 'pie', etc)
-            data: {
-                labels: ['Mundo', 'Escola'], // Labels para o eixo X
-                datasets: [{
-                    label: 'Uso de Celulares (%)',
-                    data: [data.percentualMundo, data.percentualColegio], // Dados para o gráfico
-                    backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'], // Cores das barras
-                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'], // Cor das bordas das barras
-                    borderWidth: 1 // Largura das bordas
-                }]
-            },
-            options: {
-                responsive: true, // Faz com que o gráfico seja responsivo
-                scales: {
-                    y: {
-                        beginAtZero: true // Começar a escala Y do gráfico em 0
+        // Função para buscar dados da API
+        function fetchComparacao() {
+            // Substitua com o link correto da sua API no GitHub Pages
+            fetch('https://seu-usuario.github.io/seu-repositorio/api/comparacao')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Dados da API:', data); // Verificando os dados retornados
+                    // Exibir os dados no div #resultados
+                    let resultados = `
+                        <p><strong>Usuários no Mundo:</strong> ${data.usuariosMundo} bilhões</p>
+                        <p><strong>Usuários na Escola:</strong> ${data.usuariosColegio} estudantes</p>
+                        <p><strong>Percentual de Uso no Mundo:</strong> ${data.percentualMundo}%</p>
+                        <p><strong>Percentual de Uso na Escola:</strong> ${data.percentualColegio}%</p>
+                        <p><strong>Dispositivos Usados no Mundo:</strong> ${data.dispositivosMundo.join(', ')}</p>
+                        <p><strong>Dispositivos Usados na Escola:</strong> ${data.dispositivosColegio.join(', ')}</p>
+                    `;
+                    document.getElementById('resultados').innerHTML = resultados;
+
+                    // Criar o gráfico
+                    criarGrafico(data);
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar os dados da comparação:', error); // Mostrar erros no console
+                });
+        }
+
+        // Função para criar o gráfico
+        function criarGrafico(data) {
+            const ctx = document.getElementById('graficoComparacao').getContext('2d');
+            
+            // Criando o gráfico com Chart.js
+            new Chart(ctx, {
+                type: 'bar', // Tipo de gráfico (barra)
+                data: {
+                    labels: ['Mundo', 'Escola'], // Labels para o eixo X
+                    datasets: [{
+                        label: 'Uso de Celulares (%)',
+                        data: [data.percentualMundo, data.percentualColegio], // Dados para o gráfico
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'], // Cores das barras
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'], // Cor das bordas
+                        borderWidth: 1 // Largura das bordas
+                    }]
+                },
+                options: {
+                    responsive: true, // Faz com que o gráfico seja responsivo
+                    scales: {
+                        y: {
+                            beginAtZero: true // Começar a escala Y do gráfico em 0
+                        }
                     }
                 }
-            }
-        });
-    }
-</script>
+            });
+        }
+    </script>
+</body>
+</html>
